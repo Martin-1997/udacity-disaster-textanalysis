@@ -83,7 +83,7 @@ def save_data(df, database_filename):
     database_filename (String): The name that should be given to the database file
     '''
     engine = create_engine(f'sqlite:///{database_filename}')
-    df.to_sql('TextMessages', engine, index=False)    
+    df.to_sql('TextMessages', engine, index=False, if_exists='replace')    
 
 
 def main():
