@@ -32,6 +32,17 @@ import pickle
 
 
 def load_data(database_filepath):
+    '''
+    Loads a SQLite database from disk, formats the data and returns the X and Y columns used for training a prediction model
+    
+    Parameters:
+    database_filepath (String): Filepath of the database on disk
+    
+    Returns:
+    Pandas Dataframe: A Dataframe that contains the columns to predict on
+    Pandas Dataframe: A Dataframe that contains the columns which should be predicted
+    List<String>: A list of the column names that should be predicted
+    '''
     # load data from database
     engine = create_engine(f'sqlite:///{database_filepath}')
     df = pd.read_sql_table('TextMessages', engine)
@@ -42,6 +53,21 @@ def load_data(database_filepath):
 
 
 def tokenize(text):
+    '''
+    Functions that performs the following operations on the text:
+    - converts to lowercase
+    - removes puntuation
+    - tokenizes text into word tokens
+    - removes stopwords (english languages)
+    - lemmatizes all the verbs
+    - lemmatizes all the nouns
+    
+    Parameters:
+    text (String): The text which should be processed
+    
+    Returns:
+    List<String>: List of word tokens
+    '''
     # Normalization
     
     # Convert to lower case
@@ -76,6 +102,12 @@ def tokenize(text):
 
 
 def build_model():
+    '''
+    This function creates a predefined model pipeline object and returns it
+    
+    Returns:
+    Pipeline: Predefined model pipeline
+    '''
     # pipeline = Pipeline([
     #         ('features', FeatureUnion([
 
@@ -95,8 +127,20 @@ def build_model():
         ])
     return pipeline
 
-# Calculate the average accuracy for each target column
 def print_acc(name, model, y_test, y_pred):
+    '''
+    Calculate the average accuracy for each target column and prints it in the console.
+    Returns also a dictionary with the model, its name and accuracy
+    
+    Parameters:
+    name (String): Name for the model
+    model (Model): Model (necessary because in the end a dictionary containing the model gets returned)
+    y_test (Pandas Dataframe): True values for the y-column(s)
+    y_pred (Pandas Dataframe): Predicted values for the y-column(s)
+    
+    Returns:
+    dict: Dictionary containing the model name(key: name), the model(key: model) and the accuracy of the model (key:accuracy)
+    '''
     columns = y_test.columns
     y_pred_df = pd.DataFrame(y_pred, columns = columns)
     accuracy = (y_pred_df == y_test.reset_index().drop(["index"], axis = 1)).mean()
@@ -105,17 +149,33 @@ def print_acc(name, model, y_test, y_pred):
     print(accuracy)
     return {'name' : name, 'model': model, 'accuracy' : accuracy}
 
-def evaluate_model(model, X_test, Y_test, category_names):
+def evaluate_model(model, X_test, Y_test):
+    '''
+    Create predictions for the test data based on a trained model. The evaluated accuracy is going to be printed on the screen.
+    
+    Parameters:
+    model (Model): The model used to make the predictions who was earlier trained on the training data
+    X_test (Pandas Dataframe): The data used for testing the model
+    Y_test (Pandas Dataframe): The true results for the column(s) which should be predicted. Needed for evaluating the model after making predictions.
+    '''
     y_pred = model.predict(X_test["message"])
     result = print_acc("MultiOutputClassifier with wrapped RandomForestClassifier", model, Y_test, y_pred)
 
 def save_model(model, model_filepath):
-    # save the model to disk
-    #filename = 'finalized_model.sav'
+    '''
+    Stores a model permanently to disk.
+    
+    Parameters:
+    model (Model): The model which should be stored to disk
+    model_filepath(String): Path containing the filename with file extension, where the model should be saved
+    '''
     pickle.dump(model, open(model_filepath, 'wb'))
 
 
 def main():
+    '''
+    Main functions serving as a entry point for the program
+    '''
     if len(sys.argv) == 3:
         database_filepath, model_filepath = sys.argv[1:]
         print('Loading data...\n    DATABASE: {}'.format(database_filepath))
@@ -129,7 +189,7 @@ def main():
         model.fit(X_train["message"], Y_train)
         
         print('Evaluating model...')
-        evaluate_model(model, X_test, Y_test, category_names)
+        evaluate_model(model, X_test, Y_test)
 
         print('Saving model...\n    MODEL: {}'.format(model_filepath))
         save_model(model, model_filepath)

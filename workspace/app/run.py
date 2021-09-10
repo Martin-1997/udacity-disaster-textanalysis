@@ -15,6 +15,15 @@ from sqlalchemy import create_engine
 app = Flask(__name__)
 
 def tokenize(text):
+'''
+Splits a text into it's contained words and returns a list of the lemmatized words
+
+Parameters:
+text (string): The text which should be tokenized
+
+Returns:
+list<string>: List of lemmatized words
+'''
     tokens = word_tokenize(text)
     lemmatizer = WordNetLemmatizer()
 
@@ -33,11 +42,12 @@ df = pd.read_sql_table('TextMessages', engine)
 model = joblib.load("../models/classifier.pkl")
 
 
-# index webpage displays cool visuals and receives user input text for model
 @app.route('/')
 @app.route('/index')
 def index():
-    
+    '''
+    This function is automatically called after startup and displays a webpage with cool visuals and receives user input text for model
+    '''
     # extract data needed for visuals
     # TODO: Below is an example - modify to extract data for your own visuals
     genre_counts = df.groupby('genre').count()['message']
@@ -74,9 +84,11 @@ def index():
     return render_template('master.html', ids=ids, graphJSON=graphJSON)
 
 
-# web page that handles user query and displays model results
 @app.route('/go')
 def go():
+    '''
+    Function that is automatically called to display a web page that handles user query and displays model results
+    '''
     # save user input in query
     query = request.args.get('query', '') 
 
@@ -93,6 +105,9 @@ def go():
 
 
 def main():
+    '''
+    Main startup function which servers as the entry point of the program
+    '''
     app.run(host='0.0.0.0', port=3001, debug=True)
 
 
