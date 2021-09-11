@@ -27,6 +27,7 @@ from sklearn.metrics import classification_report
 # other models
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.tree import DecisionTreeClassifier
+from sklearn.metrics import classification_report
 # pickle
 import pickle
 
@@ -132,8 +133,8 @@ def build_model():
 
 def print_acc(name, model, y_test, y_pred):
     '''
-    Calculate the average accuracy for each target column and prints it in the console.
-    Returns also a dictionary with the model, its name and accuracy
+    Calculate the average f1 score, precision and recall for each target column and prints it in the console.
+    Returns also a dictionary with the model, its name and classification report (contains f1 score, recall and precision)
     
     Parameters:
     name (String): Name for the model
@@ -142,19 +143,32 @@ def print_acc(name, model, y_test, y_pred):
     y_pred (Pandas Dataframe): Predicted values for the y-column(s)
     
     Returns:
-    dict: Dictionary containing the model name(key: name), the model(key: model) and the accuracy of the model (key:accuracy)
+    dict: Dictionary containing the model name(key: name), the model(key: model) and the classification report of the model (key:report)
     '''
+    ## old code
+    #     columns = y_test.columns
+    #     y_pred_df = pd.DataFrame(y_pred, columns = columns)
+    #     accuracy = (y_pred_df == y_test.reset_index().drop(["index"], axis = 1)).mean()
+    #     print(f"Accuracy per category {name}: ")
+    #     print(f"Average accuracy: {accuracy.mean()}")
+    #     print(accuracy)
+    #     return {'name' : name, 'model': model, 'accuracy' : accuracy}
+    
     columns = y_test.columns
     y_pred_df = pd.DataFrame(y_pred, columns = columns)
     accuracy = (y_pred_df == y_test.reset_index().drop(["index"], axis = 1)).mean()
-    print(f"Accuracy per category {name}: ")
-    print(f"Average accuracy: {accuracy.mean()}")
-    print(accuracy)
-    return {'name' : name, 'model': model, 'accuracy' : accuracy}
+    report = classification_report(y_true = y_test,
+                              y_pred = y_pred,
+                              target_names = list(y_test.columns),
+                              output_dict = True,
+                              zero_division = 0)
+    print(f"F1 score, recall and precision per category {name}: ")
+    print(report)
+    return {'name' : name, 'model': model, 'report' : report}
 
 def evaluate_model(model, X_test, Y_test):
     '''
-    Create predictions for the test data based on a trained model. The evaluated accuracy is going to be printed on the screen.
+    Create predictions for the test data based on a trained model. The evaluated f1 score, precision and recall is going to be printed on the screen.
     
     Parameters:
     model (Model): The model used to make the predictions who was earlier trained on the training data
@@ -163,6 +177,9 @@ def evaluate_model(model, X_test, Y_test):
     '''
     y_pred = model.predict(X_test["message"])
     result = print_acc("MultiOutputClassifier with wrapped RandomForestClassifier", model, Y_test, y_pred)
+    
+def create_classification_report(y_true, y_pred):
+    report = classification_report(y_true, y_pred)
 
 def save_model(model, model_filepath):
     '''
@@ -194,15 +211,15 @@ def main():
             
             # tfidf
             # https://scikit-learn.org/stable/modules/generated/sklearn.feature_extraction.text.TfidfTransformer.html
-            'tfidf__norm' : ['l1', 'l2'],
+            'tfidf__norm' : ['l1'], #, 'l2'],
             # 'tfidf__use_idf' : [True, False],
             #'tfidf__smooth_idf': [True, False],
             # 'tfidf__sublinear_tf' : [True, False],
             
             # clf
             # https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html
-            'clf__estimator__criterion' : ['gini', 'entropy'],
-            'clf__estimator__n_estimators': [100, 200],
+            'clf__estimator__criterion' : ['gini'], #, 'entropy'],
+            'clf__estimator__n_estimators': [100], # , 200],
         }
 
         model = GridSearchCV(model, param_grid=model_parameters) 
