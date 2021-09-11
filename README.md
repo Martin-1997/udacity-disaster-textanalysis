@@ -19,6 +19,7 @@ All the files were created using Jupyter Lab and the Python programming language
 - re
 - sklearn
 - pickle
+- plotly
 
 # Files
 
