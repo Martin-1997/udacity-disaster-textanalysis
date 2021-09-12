@@ -21,6 +21,17 @@ All the files were created using Jupyter Lab and the Python programming language
 - pickle
 - plotly
 
+You need to follow the following steps to process the data, create the model and run the webapp:
+
+- Go to the workspace directory
+- Run the folloing command to run the ETL pipeline that cleans data and stores in database:
+        `python data/process_data.py data/disaster_messages.csv data/disaster_categories.csv data/DisasterResponse.db`
+- Run the following command to run the ML pipeline that trains classifier and saves:
+        `python models/train_classifier.py data/DisasterResponse.db models/classifier.pkl`
+- Run the following command in the app's directory to run your web app:
+        `python run.py`
+- Go to http://0.0.0.0:3001/
+
 # Files
 
 - categories.csv and messages.csv: Raw data used to build the model
