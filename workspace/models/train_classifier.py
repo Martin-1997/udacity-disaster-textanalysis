@@ -128,8 +128,27 @@ def build_model():
         ])
     # Check for available parameters to optimize
     # pipe_parameters = pipeline.get_params().keys()
+        
+    model_parameters = {
+        # vect
+        # https://scikit-learn.org/stable/modules/generated/sklearn.feature_extraction.text.CountVectorizer.html
+
+        # tfidf
+        # https://scikit-learn.org/stable/modules/generated/sklearn.feature_extraction.text.TfidfTransformer.html
+        'tfidf__norm' : ['l1','l2'],
+        # 'tfidf__use_idf' : [True, False],
+        #'tfidf__smooth_idf': [True, False],
+        # 'tfidf__sublinear_tf' : [True, False],
+
+        # clf
+        # https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html
+        'clf__estimator__criterion' : ['gini', 'entropy'],
+        'clf__estimator__n_estimators': [100], # , 200],
+    }
+
+    model = GridSearchCV(pipeline, param_grid=model_parameters) 
     
-    return pipeline
+    return model
 
 def print_acc(name, model, y_test, y_pred):
     '''
@@ -204,25 +223,6 @@ def main():
         
         print('Building model...')
         model = build_model()
-        
-        model_parameters = {
-            # vect
-            # https://scikit-learn.org/stable/modules/generated/sklearn.feature_extraction.text.CountVectorizer.html
-            
-            # tfidf
-            # https://scikit-learn.org/stable/modules/generated/sklearn.feature_extraction.text.TfidfTransformer.html
-            'tfidf__norm' : ['l1'], #, 'l2'],
-            # 'tfidf__use_idf' : [True, False],
-            #'tfidf__smooth_idf': [True, False],
-            # 'tfidf__sublinear_tf' : [True, False],
-            
-            # clf
-            # https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html
-            'clf__estimator__criterion' : ['gini'], #, 'entropy'],
-            'clf__estimator__n_estimators': [100], # , 200],
-        }
-
-        model = GridSearchCV(model, param_grid=model_parameters) 
         
         print('Training model...')
         model.fit(X_train["message"], Y_train)
