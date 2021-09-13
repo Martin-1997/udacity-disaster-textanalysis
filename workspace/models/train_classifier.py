@@ -179,7 +179,7 @@ def print_acc(name, model, y_test, y_pred):
     report = classification_report(y_true = y_test,
                               y_pred = y_pred,
                               target_names = list(y_test.columns),
-                              output_dict = True,
+                            #  output_dict = True,
                               zero_division = 0)
     print(f"F1 score, recall and precision per category {name}: ")
     print(report)
