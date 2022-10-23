@@ -21,15 +21,17 @@ All the files were created using VS Code and the Python programming language (ve
 
 You need to follow the following steps to process the data, create the model and run the webapp:
 
-- Go to the workspace directory
+- Go to the workspace directory `cd workspace`
 - Run the folloing command to run the ETL pipeline that cleans data and stores in database:
         `python data/process_data.py data/disaster_messages.csv data/disaster_categories.csv data/DisasterResponse.db`
 - Run the following command to run the ML pipeline that trains classifier and saves:
         `python models/train_classifier.py data/DisasterResponse.db models/classifier.pkl`
-- Run the following command within workspace/app/ to start the web app:
+- Go to the app directory `cd app`
+- Run the following command to start the web app:
         `python run.py`
 - Go to http://0.0.0.0:3001/
 
+The current code does not train the model with the whole dataset which allows to test the code in a more time efficient way. To run the code with the full dataset, open workspace/models/train_classifier.py and set full_dataset to True
 # Files
 
 - categories.csv and messages.csv: Raw data used to build the model

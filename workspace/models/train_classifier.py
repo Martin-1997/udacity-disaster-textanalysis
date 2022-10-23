@@ -34,6 +34,7 @@ from sklearn.metrics import classification_report
 # pickle
 import pickle
 
+full_dataset = False
 
 def load_data(database_filepath):
     '''
@@ -54,7 +55,10 @@ def load_data(database_filepath):
     Y = df.drop(columns= ["id", "message", "original", "genre"])
     
     # Only the first 100 to speed up debugging
-    return X[:100], Y[:100], Y.columns
+    if full_dataset:
+        return X, Y, Y.columns
+    else:
+        return X[:100], Y[:100], Y.columns
 
 
 def tokenize(text):
