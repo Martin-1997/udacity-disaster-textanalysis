@@ -7,9 +7,12 @@ import re
 import numpy as np
 # nltk
 import nltk
-nltk.download('stopwords')
-nltk.download('wordnet') # download for lemmatization
-nltk.download('punkt')
+# The nltk packages should be better installed systemwide as described here:
+# https://www.nltk.org/data.html
+# nltk.download('stopwords')
+# nltk.download('wordnet') # download for lemmatization
+# nltk.download('punkt')
+# nltk.download('omw-1.4')
 from nltk.corpus import stopwords
 from nltk.stem.porter import PorterStemmer
 from nltk.stem.wordnet import WordNetLemmatizer
@@ -50,7 +53,8 @@ def load_data(database_filepath):
     X = df[["message", "original", "genre"]]
     Y = df.drop(columns= ["id", "message", "original", "genre"])
     
-    return X, Y, Y.columns
+    # Only the first 100 to speed up debugging
+    return X[:100], Y[:100], Y.columns
 
 
 def tokenize(text):
