@@ -11,16 +11,13 @@ This project is part of the Udacity Data Science Nanodegree Course. The goal of 
 
 # Installation
 
-All the files were created using Jupyter Lab and the Python programming language (version 3.8.8). The following Pyhton libraries were used:
-- numpy
-- pandas 1.2.4
-- seaborn 0.11.1
-- sqlalchemy
-- nltk
-- re
-- sklearn
-- pickle
-- plotly
+All the files were created using VS Code and the Python programming language (version 3.10.8). To recreate the environment, follow the following steps:
+
+- Install Python 3.10.8
+- Clone the repository
+- Create a virtual environment with venv: `python3 -m venv venv`
+- Load the virtual environment with `source venv/bin/activate`
+- Inside the main directory, run `pip3 install -r requirements.txt`
 
 You need to follow the following steps to process the data, create the model and run the webapp:
 
