@@ -130,3 +130,6 @@ dmypy.json
 
 # Classifier files
 *.pkl
+
+# SQLite databases
+.db
