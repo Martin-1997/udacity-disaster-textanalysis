@@ -1,0 +1,9 @@
+numpy
+pandas
+sqlalchemy
+nltk
+scikit-learn
+joblib
+# For web interface
+plotly
+flask
